@@ -6,6 +6,7 @@ import { createDiary } from "@/lib/api/diary"
 import { Emotion, Weather } from "@/types/diary"
 import { useState } from "react"
 import { toast } from "sonner"
+import Image from "next/image"
 import {
     Select,
     SelectTrigger,
@@ -13,6 +14,8 @@ import {
     SelectContent,
     SelectItem
 } from "@/components/ui/select"
+import { relative } from "path"
+import { cn } from "@/lib/utils"
 
 export default function Page() {
     const [title, setTitle] = useState("")
@@ -20,7 +23,36 @@ export default function Page() {
     const [diaryDate, setDiaryDate] = useState("")
     const [emotion, setEmotion] = useState<Emotion>("HAPPY")
     const [weather, setWeather] = useState<Weather>("SUNNY")
-
+    const emotions = [{
+        value: "HAPPY",
+        text: "행복",
+        image: "happy.png"
+    },
+    {
+        value: "SAD",
+        text: "슬픔",
+        image: "sad.png"
+    },
+    {
+        value: "ANGRY",
+        text: "화남",
+        image: "angry.png"
+    },
+    {
+        value: "EXCITED",
+        text: "신남",
+        image: "excited.png"
+    },
+    {
+        value: "TIRED",
+        text: "지침",
+        image: "tired.png"
+    },
+    {
+        value: "NOMAL",
+        text: "평범",
+        image: "normal.png"
+    } ] //"HAPPY", "SAD", "ANGRY", "EXCITED", "TIRED", "NORMAL"
 
     const write = async () => {
         try {
@@ -70,7 +102,25 @@ export default function Page() {
                 </div>
                 <div>
                     <div>감정</div>
-                    <Select value={emotion} onValueChange={(value: string) => setEmotion(value as Emotion)}>
+                        
+                        <div className="flex space-x-2">
+                            {
+                                emotions.map((item, i) =>
+                                (<div key={i} className={cn(
+                                    "border rounded-xl overflow-hidden p-1", 
+                                    emotion === item.value && "border-primary"
+                                    )} onClick={() => setEmotion(item.value as Emotion)}>
+                                    <div className="relative w-20 aspect-square">
+                                        <Image src={`/images/emotion/${item.image}`} fill alt={item.text}></Image>
+                                    </div>
+                                    <div className="text-center text-xs font-semibold">{item.text}</div>
+                                    </div>)
+                                )
+                            }
+                    </div>
+
+                    
+                    {/* <Select value={emotion} onValueChange={(value: string) => setEmotion(value as Emotion)}>
                         <SelectTrigger>
                             <SelectValue placeholder="감정을 선택하세요"></SelectValue>
                         </SelectTrigger>
@@ -80,8 +130,8 @@ export default function Page() {
                                 .map(item => <SelectItem key = {item} value={item}> {item}</SelectItem>)
                             }
                         </SelectContent>
-                    </Select>
-                    </div>
+                    </Select> */}
+                    
                 <div>
                 <div>날씨</div>
                 <Select value={weather} onValueChange={(value: string) => setWeather(value as Weather)}>
@@ -101,6 +151,7 @@ export default function Page() {
                     <Button onClick={write}>저장</Button>
                 </div>
             </div>
+        </div>
         </div>
     )
 }

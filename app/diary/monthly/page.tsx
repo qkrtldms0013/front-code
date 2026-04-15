@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input"
 import { getDiaryMonthly } from "@/lib/api/diary"
 import { Diary } from "@/types/diary"
 import { useState } from "react"
+import Image from "next/image"
+
 
 export default function Page() {
     const[ year, setYear] = useState("2026")
     const[ month, setMonth ] = useState("4")
     const[diaries, setDiaries] = useState<Diary[]>([])
-
+    
 
     const search = async() => {
         const result = await getDiaryMonthly(Number(year), Number(month))
@@ -29,11 +31,15 @@ export default function Page() {
              <Button onClick={search}>조회</Button>
              
             </div>
-            <div className="mt-4 space-y-2">
-                {diaries.map((diary, index) => (
-                <div key={index}>  
-                    {diary.title}
-                </div>
+
+            <div>
+                {diaries.map((item, i) => (
+                    <div key={i}>
+                        {item.title}
+                        <div className="relative w-20 aspect-square">
+                            <Image src={`/images/emotion/${item.emotion.toLowerCase()}.png`} fill alt={item.emotion}></Image>
+                        </div>
+                    </div>
                 ))}
             </div>
 
